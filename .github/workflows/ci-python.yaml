@@ -1,0 +1,36 @@
+name: Python Advanced CI
+
+on:
+  push:
+    branches: [ main ]
+  [cite_start]pull_request:
+    branches: [ main ]
+
+[cite_start]env: 
+  PYTHON_VERSION: '3.10'
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip' 
+
+      - name: Install dependencies
+        run: pip install pytest
+
+      - name: Run Unit Tests
+        run: pytest > test-report.txt
+
+      - name: Upload Test Report
+        [cite_start]if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reporte-de-pruebas
+          path: test-report.txt
